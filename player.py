@@ -25,15 +25,24 @@ class Player(pygame.sprite.Sprite):
         #Timers
         self.timers = {
             "usando ferramentas": Timer(350,self.usar_ferramentas),
-            "escolhendo ferramentas": Timer(200)
+            "escolhendo ferramentas": Timer(200),
+            "usando sementes": Timer(350, self.usar_ferramentas),
+            "escolhendo sementes": Timer(200)
         }
         #Ferramentas
         self.ferramentas = ['hoe','axe','water']
         self.indice_ferramenta = 0
-        self.selecioando_ferramenta = self.ferramentas[self.indice_ferramenta]
+        self.selecionando_ferramenta = self.ferramentas[self.indice_ferramenta]
+
+        #Sementes
+        self.sementes = ['corn','tomato']
+        self.indice_sementes = 0
+        self.selecionando_sementes = self.sementes[self.indice_sementes]\
 
     def usar_ferramentas(self):
-        print(self.selecioando_ferramenta)
+        pass
+    def usar_sementes(self):
+        pass
 
     # importando as sprites
     def import_assets(self):
@@ -89,7 +98,21 @@ class Player(pygame.sprite.Sprite):
                 self.indice_ferramenta += 1
                 if self.indice_ferramenta == len(self.ferramentas):
                     self.indice_ferramenta = 0
-                self.selecioando_ferramenta = self.ferramentas[self.indice_ferramenta]
+                self.selecionando_ferramenta = self.ferramentas[self.indice_ferramenta]
+
+            #Usando Semenetes
+            if keys[pygame.K_LCTRL]:
+                self.timers["usando sementes"].ativado()
+                self.direcao = pygame.math.Vector2()
+                self.indice_frame = 0
+
+             # Mudando a sementes
+            if keys[pygame.K_e] and not self.timers["escolhendo sementes"].ativo:
+                self.timers["escolhendo sementes"].ativado()
+                self.indice_sementes += 1
+                if self.self.indice_sementes == len(self.sementes):
+                    self.self.indice_sementes = 0
+                self.selecionando_sementes = self.sementes[self.indice_sementes]
 
     def get_status(self):
 
@@ -100,7 +123,7 @@ class Player(pygame.sprite.Sprite):
         # Usando Ferramentas
 
         if self.timers["usando ferramentas"].ativo:
-            self.status = self.status.split('_')[0] + '_' + self.selecioando_ferramenta
+            self.status = self.status.split('_')[0] + '_' + self.selecionando_ferramenta
 
     def update_timers(self):
         for timer in self.timers.values():
