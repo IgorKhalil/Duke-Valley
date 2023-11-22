@@ -110,8 +110,8 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_e] and not self.timers["escolhendo sementes"].ativo:
                 self.timers["escolhendo sementes"].ativado()
                 self.indice_sementes += 1
-                if self.self.indice_sementes == len(self.sementes):
-                    self.self.indice_sementes = 0
+                if self.indice_sementes == len(self.sementes):
+                    self.indice_sementes = 0
                 self.selecionando_sementes = self.sementes[self.indice_sementes]
 
     def get_status(self):
