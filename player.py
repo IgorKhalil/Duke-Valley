@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
 
         #Timers
         self.timers = {
-            "usando ferramentas": Timer(350,self.usar_ferramentas)
+            "usando ferramentas": Timer(350,self.usar_ferramentas),
             "escolhendo ferramentas": Timer(200)
         }
         #Ferramentas
@@ -87,6 +87,8 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_q] and not self.timers["escolhendo ferramentas"].ativo:
                 self.timers["escolhendo ferramentas"].ativado()
                 self.indice_ferramenta += 1
+                if self.indice_ferramenta == len(self.ferramentas):
+                    self.indice_ferramenta = 0
                 self.selecioando_ferramenta = self.ferramentas[self.indice_ferramenta]
 
     def get_status(self):

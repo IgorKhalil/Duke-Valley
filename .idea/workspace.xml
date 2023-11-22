@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e25253f5-a38a-478b-9b4f-380c3c52e211" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Duke-Valley-main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Time.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/player.py" afterDir="false" />
-    </list>
+    <list default="true" id="e25253f5-a38a-478b-9b4f-380c3c52e211" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,7 +86,7 @@
       <workItem from="1698596961487" duration="4000" />
       <workItem from="1698750871918" duration="748000" />
       <workItem from="1698751864657" duration="3679000" />
-      <workItem from="1700586871891" duration="5756000" />
+      <workItem from="1700586871891" duration="6043000" />
     </task>
     <servers />
   </component>
