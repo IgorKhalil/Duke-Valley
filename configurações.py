@@ -5,8 +5,8 @@ altura = 720
 tile_size = 64
 
 OVERLAY_POSICAO = {
-	'tool' : (40, altura - 15),
-	'seed': (70, altura - 5)}
+	'ferramenta' : (40, altura - 15),
+	'semente': (70, altura - 5)}
 
 PLAYER_TOOL_OFFSET = {
 	'left': Vector2(-50,40),

@@ -12,7 +12,7 @@ class Level:
 
         # Chamando o setup
         self.setup()
-        self.overlay = Overlay()
+        self.overlay = Overlay(self.player)
     def setup(self):
         self.player = Player((640,360), self.all_sprites)
 
