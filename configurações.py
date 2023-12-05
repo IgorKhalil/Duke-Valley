@@ -15,18 +15,18 @@ PLAYER_TOOL_OFFSET = {
 	'down': Vector2(0,50)
 }
 
-LAYERS = {
-	'water': 0,
-	'ground': 1,
-	'soil': 2,
-	'soil water': 3,
-	'rain floor': 4,
-	'house bottom': 5,
-	'ground plant': 6,
+Camadas = {
+	'agua': 0,
+	'chao': 1,
+	'solo': 2,
+	'solo molhado': 3,
+	'chao molhado': 4,
+	'fundo da casa': 5,
+	'planta': 6,
 	'main': 7,
-	'house top': 8,
-	'fruit': 9,
-	'rain drops': 10
+	'topo da casa': 8,
+	'fruta': 9,
+	'pingos de chuva': 10
 }
 
 APPLE_POS = {
