@@ -17,6 +17,7 @@ class Jogo:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
             # dt é delta timing, uma variavél que irei utilizar para ter independecia dos frames.
             dt = self.relogio.tick() / 1000
             self.level.rodando(dt)

@@ -1,6 +1,5 @@
 from os import walk
-
-import pygame.image
+import pygame
 
 
 def import_folder(path):

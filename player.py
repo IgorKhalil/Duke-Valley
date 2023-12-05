@@ -52,8 +52,8 @@ class Player(pygame.sprite.Sprite):
                           'right_axe': [], 'left_axe': [], 'up_axe': [], 'down_axe': [],
                           'right_water': [], 'left_water': [], 'up_water': [], 'down_water': []}
         for animacao in self.animacoes.keys():
-            full_path = './graficos/personagem/' + animacao
-            self.animacoes[animacao] = import_folder(full_path)
+            todos_arquivos = './graficos/personagem/' + animacao
+            self.animacoes[animacao] = import_folder(todos_arquivos)
 
     # animando o personagem
     def animado(self, dt):
@@ -96,8 +96,9 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_q] and not self.timers["escolhendo ferramentas"].ativo:
                 self.timers["escolhendo ferramentas"].ativado()
                 self.indice_ferramenta += 1
-                if self.indice_ferramenta == len(self.ferramentas):
-                    self.indice_ferramenta = 0
+                self.indice_ferramenta = self.indice_ferramenta if self.indice_ferramenta < len(self.ferramentas) else 0
+                # if self.indice_ferramenta == len(self.ferramentas):
+                #     self.indice_ferramenta = 0
                 self.selecionando_ferramenta = self.ferramentas[self.indice_ferramenta]
 
             #Usando Semenetes
@@ -110,8 +111,9 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_e] and not self.timers["escolhendo sementes"].ativo:
                 self.timers["escolhendo sementes"].ativado()
                 self.indice_sementes += 1
-                if self.indice_sementes == len(self.sementes):
-                    self.indice_sementes = 0
+                self.indice_sementes = self.indice_sementes if self.indice_sementes < len(self.sementes) else 0
+                # if self.indice_sementes == len(self.sementes):
+                #     self.indice_sementes = 0
                 self.selecionando_sementes = self.sementes[self.indice_sementes]
 
     def get_status(self):

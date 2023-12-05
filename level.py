@@ -1,7 +1,7 @@
 import pygame
 from configurações import *
 from player import Player
-
+from overlay import Overlay
 class Level:
     def __init__(self):
         #pega a tela do main
@@ -12,7 +12,7 @@ class Level:
 
         # Chamando o setup
         self.setup()
-
+        self.overlay = Overlay()
     def setup(self):
         self.player = Player((640,360), self.all_sprites)
 
@@ -20,3 +20,4 @@ class Level:
         self.superfice_tela.fill('black')
         self.all_sprites.draw(self.superfice_tela)
         self.all_sprites.update(dt)
+        self.overlay.tela()
