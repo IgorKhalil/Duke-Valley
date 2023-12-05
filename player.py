@@ -96,9 +96,8 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_q] and not self.timers["escolhendo ferramentas"].ativo:
                 self.timers["escolhendo ferramentas"].ativado()
                 self.indice_ferramenta += 1
-                self.indice_ferramenta = self.indice_ferramenta if self.indice_ferramenta < len(self.ferramentas) else 0
-                # if self.indice_ferramenta == len(self.ferramentas):
-                #     self.indice_ferramenta = 0
+                if self.indice_ferramenta == len(self.ferramentas):
+                    self.indice_ferramenta = 0
                 self.selecionando_ferramenta = self.ferramentas[self.indice_ferramenta]
 
             #Usando Semenetes
@@ -111,9 +110,8 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_e] and not self.timers["escolhendo sementes"].ativo:
                 self.timers["escolhendo sementes"].ativado()
                 self.indice_sementes += 1
-                self.indice_sementes = self.indice_sementes if self.indice_sementes < len(self.sementes) else 0
-                # if self.indice_sementes == len(self.sementes):
-                #     self.indice_sementes = 0
+                if self.indice_sementes == len(self.sementes):
+                    self.indice_sementes = 0
                 self.selecionando_sementes = self.sementes[self.indice_sementes]
 
     def get_status(self):
