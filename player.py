@@ -21,7 +21,7 @@ class Player(pygame.sprite.Sprite):
         # Atributos de movimento
         self.direcao = pygame.math.Vector2()
         self.posicao = pygame.math.Vector2(self.rect.center)
-        self.velocidade = 200
+        self.velocidade = 600
 
         #Timers
         self.timers = {
@@ -57,7 +57,7 @@ class Player(pygame.sprite.Sprite):
             self.animacoes[animacao] = import_folder(todos_arquivos)
 
     # animando o personagem
-    def animado(self, dt):
+    def animacao(self, dt):
         self.indice_frame += 4 * dt
         if self.indice_frame >= len(self.animacoes[self.status]):
             self.indice_frame = 0
@@ -150,4 +150,4 @@ class Player(pygame.sprite.Sprite):
         self.get_status()
         self.update_timers()
         self.movimento(dt)
-        self.animado(dt)
+        self.animacao(dt)

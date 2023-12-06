@@ -2,7 +2,9 @@ import pygame
 from configurações import *
 from player import Player
 from overlay import Overlay
-from sprite import Generico
+from sprite import Generico, Agua, Vegetacao, Arvores
+from pytmx.util_pygame import load_pygame
+from suporte import *
 class Level:
     def __init__(self):
         #pega a tela do main
@@ -15,6 +17,36 @@ class Level:
         self.setup()
         self.overlay = Overlay(self.player)
     def setup(self):
+        tmx_data = load_pygame('./data/map.tmx')
+
+        #parte de baixo da casa
+        for camada in ['HouseFloor', 'HouseFurnitureBottom']:
+            for x, y, surf in tmx_data.get_layer_by_name(camada).tiles():
+                Generico((x * tile_size, y * tile_size), surf, self.all_sprites, Camadas['fundo da casa'])
+
+        #parte de cima da casa
+        for camada in ['HouseWalls', 'HouseFurnitureTop']:
+            for x, y, surf in tmx_data.get_layer_by_name(camada).tiles():
+                Generico((x * tile_size, y * tile_size), surf, self.all_sprites)
+
+        #cerca no mapa
+        for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
+            Generico((x * tile_size, y * tile_size), surf, self.all_sprites)
+
+        #agua no mapa
+        frames_agua = import_folder('./graficos/agua')
+        for x, y, surf in tmx_data.get_layer_by_name('Water').tiles():
+            Agua((x * tile_size, y * tile_size),frames_agua,self.all_sprites)
+
+        #vegetação
+        for objeto in tmx_data.get_layer_by_name('Decoration'):
+            Vegetacao((objeto.x,objeto.y), objeto.image, self.all_sprites)
+
+        # Arvores
+        for objeto in tmx_data.get_layer_by_name('Trees'):
+            Arvores((objeto.x, objeto.y), objeto.image, self.all_sprites)
+
+
         self.player = Player((640, 360), self.all_sprites)
         Generico(posicao = (0,0),
                  surf= pygame.image.load("./graficos/mundo/ground.png").convert_alpha(),
@@ -37,7 +69,7 @@ class CameraGroup(pygame.sprite.Group):
         self.offset.y = player.rect.centery - altura/2
 
         for camada in Camadas.values():
-            for sprite in self.sprites():
+            for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
                 if sprite.z == camada:
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -= self.offset
