@@ -6,7 +6,7 @@ from Time import Timer
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, posicao, grupo, colisao_sprites):
+    def __init__(self, posicao, grupo, colisao_sprites, arvore_sprites):
         super().__init__(grupo)
 
         self.import_assets()
@@ -42,10 +42,26 @@ class Player(pygame.sprite.Sprite):
         #Sementes
         self.sementes = ['corn','tomato']
         self.indice_sementes = 0
-        self.selecionando_sementes = self.sementes[self.indice_sementes]\
+        self.selecionando_sementes = self.sementes[self.indice_sementes]
+
+        # Interações
+        self.arvore_sprites = arvore_sprites
+
 
     def usar_ferramentas(self):
-        pass
+        if self.selecionando_ferramenta == 'axe':
+            for arvore in self.arvore_sprites.sprites():
+                if arvore.rect.collidepoint(self.posicao_alvo):
+                    arvore.dano()
+
+        if self.selecionando_ferramenta == 'hoe':
+            pass
+        if self.selecionando_ferramenta == 'water':
+            pass
+
+    def obtem_alvo(self):
+        self.posicao_alvo = self.rect.center + Offset_ferramentas[self.status.split('_')[0]]
+
     def usar_sementes(self):
         pass
 
@@ -180,3 +196,4 @@ class Player(pygame.sprite.Sprite):
         self.update_timers()
         self.movimento(dt)
         self.animacao(dt)
+        self.obtem_alvo()

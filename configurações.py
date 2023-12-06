@@ -4,11 +4,11 @@ largura = 1280
 altura = 720
 tile_size = 64
 
-OVERLAY_POSICAO = {
+Overlay_Posicao = {
 	'ferramenta' : (40, altura - 15),
 	'semente': (70, altura - 5)}
 
-PLAYER_TOOL_OFFSET = {
+Offset_ferramentas = {
 	'left': Vector2(-50,40),
 	'right': Vector2(50,40),
 	'up': Vector2(0,-10),
@@ -29,7 +29,7 @@ Camadas = {
 	'pingos de chuva': 10
 }
 
-APPLE_POS = {
+PosicaoMaca = {
 	'Small': [(18,17), (30,37), (12,50), (30,45), (20,30), (30,10)],
 	'Large': [(30,24), (60,65), (50,50), (16,40),(45,50), (42,70)]
 }

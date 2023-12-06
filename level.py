@@ -13,6 +13,7 @@ class Level:
         # Grupo das sprites
         self.all_sprites = CameraGroup()
         self.colisao_sprites = pygame.sprite.Group()
+        self.arvore_sprites = pygame.sprite.Group()
 
         # Chamando o setup
         self.setup()
@@ -45,7 +46,7 @@ class Level:
 
         # Arvores
         for objeto in tmx_data.get_layer_by_name('Trees'):
-            Arvore((objeto.x, objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites], objeto.name)
+            Arvore((objeto.x, objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites, self.arvore_sprites], objeto.name)
 
         # Colisão do mapa
         for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():
@@ -54,7 +55,8 @@ class Level:
         #Personagem
         for objeto in tmx_data.get_layer_by_name('Player'):
             if objeto.name =='Start':
-                self.player = Player((objeto.x, objeto.y), self.all_sprites, self.colisao_sprites)
+                self.player = Player((objeto.x, objeto.y), self.all_sprites,
+                                     self.colisao_sprites, self.arvore_sprites)
                 Generico(posicao = (0,0),
                          surf= pygame.image.load("./graficos/mundo/ground.png").convert_alpha(),
                          grupo = self.all_sprites, z = Camadas['chao'])

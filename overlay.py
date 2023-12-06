@@ -17,9 +17,9 @@ class Overlay:
 
 
 		ferramenta_surf = self.ferramentas_surf[self.player.selecionando_ferramenta]
-		ferramenta_rect = ferramenta_surf.get_rect(midbottom = OVERLAY_POSICAO['ferramenta'])
+		ferramenta_rect = ferramenta_surf.get_rect(midbottom = Overlay_Posicao['ferramenta'])
 		self.superfice_tela.blit(ferramenta_surf, ferramenta_rect)
 
 		semente_surf = self.sementes_surf[self.player.selecionando_sementes]
-		semente_rect = semente_surf.get_rect(midbottom = OVERLAY_POSICAO['semente'])
+		semente_rect = semente_surf.get_rect(midbottom = Overlay_Posicao['semente'])
 		self.superfice_tela.blit(semente_surf, semente_rect)
