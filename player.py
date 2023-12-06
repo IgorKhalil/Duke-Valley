@@ -6,8 +6,8 @@ from Time import Timer
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, posicao, group):
-        super().__init__(group)
+    def __init__(self, posicao, grupo):
+        super().__init__(grupo)
 
         self.import_assets()
         self.status = 'down_idle'
@@ -15,7 +15,8 @@ class Player(pygame.sprite.Sprite):
 
         # Setup geral
         self.image = self.animacoes[self.status][self.indice_frame]
-        self.rect = self.image.get_rect(center=posicao)
+        self.rect = self.image.get_rect(center = posicao)
+        self.z = Camadas['main']
 
         # Atributos de movimento
         self.direcao = pygame.math.Vector2()
