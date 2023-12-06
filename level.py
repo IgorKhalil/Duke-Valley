@@ -2,7 +2,7 @@ import pygame
 from configurações import *
 from player import Player
 from overlay import Overlay
-from sprite import Generico, Agua, Vegetacao, Arvores
+from sprite import Generico, Agua, Vegetacao, Arvore
 from pytmx.util_pygame import load_pygame
 from suporte import *
 class Level:
@@ -12,6 +12,7 @@ class Level:
 
         # Grupo das sprites
         self.all_sprites = CameraGroup()
+        self.colisao_sprites = pygame.sprite.Group()
 
         # Chamando o setup
         self.setup()
@@ -31,7 +32,7 @@ class Level:
 
         #cerca no mapa
         for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
-            Generico((x * tile_size, y * tile_size), surf, self.all_sprites)
+            Generico((x * tile_size, y * tile_size), surf, [self.all_sprites, self.colisao_sprites])
 
         #agua no mapa
         frames_agua = import_folder('./graficos/agua')
@@ -40,17 +41,23 @@ class Level:
 
         #vegetação
         for objeto in tmx_data.get_layer_by_name('Decoration'):
-            Vegetacao((objeto.x,objeto.y), objeto.image, self.all_sprites)
+            Vegetacao((objeto.x,objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites])
 
         # Arvores
         for objeto in tmx_data.get_layer_by_name('Trees'):
-            Arvores((objeto.x, objeto.y), objeto.image, self.all_sprites)
+            Arvore((objeto.x, objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites], objeto.name)
 
+        # Colisão do mapa
+        for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():
+            Generico((x * tile_size, y * tile_size), pygame.Surface((tile_size,tile_size)), self.colisao_sprites)
 
-        self.player = Player((640, 360), self.all_sprites)
-        Generico(posicao = (0,0),
-                 surf= pygame.image.load("./graficos/mundo/ground.png").convert_alpha(),
-                 grupo = self.all_sprites, z = Camadas['chao'])
+        #Personagem
+        for objeto in tmx_data.get_layer_by_name('Player'):
+            if objeto.name =='Start':
+                self.player = Player((objeto.x, objeto.y), self.all_sprites, self.colisao_sprites)
+                Generico(posicao = (0,0),
+                         surf= pygame.image.load("./graficos/mundo/ground.png").convert_alpha(),
+                         grupo = self.all_sprites, z = Camadas['chao'])
 
     def rodando(self,dt):
         self.superfice_tela.fill('black')

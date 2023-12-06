@@ -6,7 +6,7 @@ from Time import Timer
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, posicao, grupo):
+    def __init__(self, posicao, grupo, colisao_sprites):
         super().__init__(grupo)
 
         self.import_assets()
@@ -22,6 +22,10 @@ class Player(pygame.sprite.Sprite):
         self.direcao = pygame.math.Vector2()
         self.posicao = pygame.math.Vector2(self.rect.center)
         self.velocidade = 600
+
+        #Colisão
+        self.colisao_sprites = colisao_sprites
+        self.hitbox = self.rect.copy().inflate((-126,-70))
 
         #Timers
         self.timers = {
@@ -130,6 +134,27 @@ class Player(pygame.sprite.Sprite):
         for timer in self.timers.values():
             timer.update()
 
+    def colisao(self, direcao):
+        for sprite in self.colisao_sprites.sprites():
+            if hasattr(sprite, 'hitbox'):
+                if sprite.hitbox.colliderect(self.hitbox):
+                    if direcao == 'horizontal':
+                        if self.direcao.x > 0:
+                            self.hitbox.right = sprite.hitbox.left
+                        if self.direcao.x < 0:
+                            self.hitbox.left = sprite.hitbox.right
+                        self.rect.centerx = self.hitbox.centerx
+                        self.posicao.x = self.hitbox.centerx
+
+                    if direcao == 'vertical':
+                        if self.direcao.y > 0:
+                            self.hitbox.bottom = sprite.hitbox.top
+                        if self.direcao.y < 0:
+                            self.hitbox.top = sprite.hitbox.bottom
+                        self.rect.centery = self.hitbox.centery
+                        self.posicao.y = self.hitbox.centery
+
+
     # Gerando o movimento na tela
     def movimento(self, dt):
 
@@ -139,11 +164,15 @@ class Player(pygame.sprite.Sprite):
 
         # Movimento horizontal
         self.posicao.x += self.direcao.x * self.velocidade * dt
-        self.rect.centerx = self.posicao.x
+        self.hitbox.centerx = round(self.posicao.x)
+        self.rect.centerx = self.hitbox.centerx
+        self.colisao('horizontal')
 
         # Movimento vertical
         self.posicao.y += self.direcao.y * self.velocidade * dt
-        self.rect.centery = self.posicao.y
+        self.hitbox.centery = round(self.posicao.y)
+        self.rect.centery = self.hitbox.centery
+        self.colisao('vertical')
 
     def update(self, dt):
         self.input()

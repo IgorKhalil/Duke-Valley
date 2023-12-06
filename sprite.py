@@ -6,6 +6,7 @@ class Generico(pygame.sprite.Sprite):
 		self.image = surf
 		self.rect = self.image.get_rect(topleft = posicao)
 		self.z = z
+		self.hitbox = self.rect.copy().inflate(-self.rect.width * 0.2, -self.rect.height * 0.75)
 
 class Agua(Generico):
 	def __init__(self, posicao, frames, grupo):
@@ -31,7 +32,8 @@ class Agua(Generico):
 class Vegetacao(Generico):
 	def __int__(self, posicao, surf, grupo):
 		super().__int__(posicao, surf, grupo)
+		self.hitbox = self.rect.copy().inflate(-20, -self.rect.heigth * 0.9)
 
-class Arvores(Generico):
-	def __int__(self, posicao, surf, grupo, nome):
-		super().__int__(posicao, surf, grupo)
+class Arvore(Generico):
+	def __init__(self, posicao, surf, grupo, name):
+		super().__init__(posicao, surf, grupo)
