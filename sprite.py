@@ -36,6 +36,23 @@ class Vegetacao(Generico):
 		super().__int__(posicao, surf, grupo)
 		self.hitbox = self.rect.copy().inflate(-20, -self.rect.heigth * 0.9)
 
+class Particulas(Generico):
+	def __init__(self, posicao, surf, grupo, z, duracao = 200):
+		super().__init__(posicao, surf, grupo, z)
+		self.tempo_inicial = pygame.time.get_ticks()
+		self.duracao = duracao
+
+		# white surface
+		mask_surf = pygame.mask.from_surface(self.image)
+		new_surf = mask_surf.to_surface()
+		new_surf.set_colorkey((0,0,0))
+		self.image = new_surf
+
+	def update(self,dt):
+		tempo_atual = pygame.time.get_ticks()
+		if tempo_atual - self.tempo_inicial > self.duracao:
+			self.kill()
+
 class Arvore(Generico):
 	def __init__(self, posicao, surf, grupo, name):
 		super().__init__(posicao, surf, grupo)
@@ -54,19 +71,19 @@ class Arvore(Generico):
 		self.maca_sprites = pygame.sprite.Group()
 		self.cria_fruta()
 
-
-
-
 	def dano(self):
 
-		self.vida -= 1
+		if self.viva:
+			self.vida -= 1
 
-		if len(self.maca_sprites.sprites()) > 0:
-			maca_aleatoria = choice(self.maca_sprites.sprites())
-			maca_aleatoria.kill()
+			if len(self.maca_sprites.sprites()) > 0:
+				maca_aleatoria = choice(self.maca_sprites.sprites())
+				Particulas(maca_aleatoria.rect.topleft,maca_aleatoria.image, self.groups()[0], z=Camadas['fruta'])
+				maca_aleatoria.kill()
 
 	def verifica_morte(self):
 		if self.vida <= 0:
+			Particulas(self.rect.topleft,self.image, self.groups()[0], Camadas['fruta'], 500)
 			self.image = self.toco_surf
 			self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
 			self.hitbox = self.rect.copy().inflate(-10,-self.rect.height*0.6)
@@ -75,6 +92,7 @@ class Arvore(Generico):
 	def update(self,dt):
 		if self.viva:
 			self.verifica_morte()
+
 	def cria_fruta(self):
 		for posicao in self.maca_posicao:
 			if randint(0, 10) < 2:
