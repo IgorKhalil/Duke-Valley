@@ -46,7 +46,7 @@ class Level:
 
         # Arvores
         for objeto in tmx_data.get_layer_by_name('Trees'):
-            Arvore((objeto.x, objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites, self.arvore_sprites], objeto.name)
+            Arvore((objeto.x, objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites, self.arvore_sprites], objeto.name, self.all_sprites)
 
         # Colisão do mapa
         for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():

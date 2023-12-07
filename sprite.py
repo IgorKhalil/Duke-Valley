@@ -53,8 +53,12 @@ class Particulas(Generico):
 		if tempo_atual - self.tempo_inicial > self.duracao:
 			self.kill()
 
+class Maca(Generico):
+	def __init__(self, posicao, surf, grupo):
+		super().__init__(posicao, surf, grupo, Camadas['fruta'])
+
 class Arvore(Generico):
-	def __init__(self, posicao, surf, grupo, name):
+	def __init__(self, posicao : tuple[float, float], surf, grupo, name, geral_group) -> None:
 		super().__init__(posicao, surf, grupo)
 
 		# atributos
@@ -69,9 +73,10 @@ class Arvore(Generico):
 		self.maca_surf = pygame.image.load('./graficos/frutas/apple.png')
 		self.maca_posicao = PosicaoMaca[name]
 		self.maca_sprites = pygame.sprite.Group()
-		self.cria_fruta()
+		self.cria_fruta(geral_group)
 
-	def dano(self):
+
+	def dano(self) -> int:
 
 		if self.viva:
 			self.vida -= 1
@@ -93,13 +98,15 @@ class Arvore(Generico):
 		if self.viva:
 			self.verifica_morte()
 
-	def cria_fruta(self):
+	def cria_fruta(self, geral_group : dict) -> None:
 		for posicao in self.maca_posicao:
 			if randint(0, 10) < 2:
 				x = posicao[0] + self.rect.left
 				y = posicao[1] + self.rect.top
-				Generico(
+				grupo = [self.maca_sprites]
+				camada = Camadas['fruta']
+				maca = Maca(
 					posicao=(x, y),
 					surf=self.maca_surf,
-					grupo=[self.maca_sprites, self.groups()[0]],
-					z=Camadas['fruta'])
+					grupo=grupo)
+				geral_group.add(maca)

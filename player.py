@@ -3,6 +3,7 @@ from configurações import *
 from suporte import *
 from Time import Timer
 
+
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
@@ -15,7 +16,7 @@ class Player(pygame.sprite.Sprite):
 
         # Setup geral
         self.image = self.animacoes[self.status][self.indice_frame]
-        self.rect = self.image.get_rect(center = posicao)
+        self.rect = self.image.get_rect(center=posicao)
         self.z = Camadas['main']
 
         # Atributos de movimento
@@ -23,30 +24,29 @@ class Player(pygame.sprite.Sprite):
         self.posicao = pygame.math.Vector2(self.rect.center)
         self.velocidade = 600
 
-        #Colisão
+        # Colisão
         self.colisao_sprites = colisao_sprites
-        self.hitbox = self.rect.copy().inflate((-126,-70))
+        self.hitbox = self.rect.copy().inflate((-126, -70))
 
-        #Timers
+        # Timers
         self.timers = {
-            "usando ferramentas": Timer(350,self.usar_ferramentas),
+            "usando ferramentas": Timer(350, self.usar_ferramentas),
             "escolhendo ferramentas": Timer(200),
             "usando sementes": Timer(350, self.usar_ferramentas),
             "escolhendo sementes": Timer(200)
         }
-        #Ferramentas
-        self.ferramentas = ['hoe','axe','water']
+        # Ferramentas
+        self.ferramentas = ['hoe', 'axe', 'water']
         self.indice_ferramenta = 0
         self.selecionando_ferramenta = self.ferramentas[self.indice_ferramenta]
 
-        #Sementes
-        self.sementes = ['corn','tomato']
+        # Sementes
+        self.sementes = ['corn', 'tomato']
         self.indice_sementes = 0
         self.selecionando_sementes = self.sementes[self.indice_sementes]
 
         # Interações
         self.arvore_sprites = arvore_sprites
-
 
     def usar_ferramentas(self):
         if self.selecionando_ferramenta == 'axe':
@@ -121,13 +121,13 @@ class Player(pygame.sprite.Sprite):
                     self.indice_ferramenta = 0
                 self.selecionando_ferramenta = self.ferramentas[self.indice_ferramenta]
 
-            #Usando Semenetes
+            # Usando Semenetes
             if keys[pygame.K_LCTRL]:
                 self.timers["usando sementes"].ativado()
                 self.direcao = pygame.math.Vector2()
                 self.indice_frame = 0
 
-             # Mudando a sementes
+            # Mudando a sementes
             if keys[pygame.K_e] and not self.timers["escolhendo sementes"].ativo:
                 self.timers["escolhendo sementes"].ativado()
                 self.indice_sementes += 1
@@ -170,10 +170,8 @@ class Player(pygame.sprite.Sprite):
                         self.rect.centery = self.hitbox.centery
                         self.posicao.y = self.hitbox.centery
 
-
     # Gerando o movimento na tela
-    def movimento(self, dt):
-
+    def movimento(self, dt: float):
         # utilizando a função normalize do pygame, para ajustar a velocidade do movimento diagonal
         if self.direcao.magnitude() > 0:
             self.direcao = self.direcao.normalize()
