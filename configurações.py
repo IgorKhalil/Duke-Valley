@@ -34,7 +34,7 @@ PosicaoMaca = {
 	'Large': [(30,24), (60,65), (50,50), (16,40),(45,50), (42,70)]
 }
 
-GROW_SPEED = {
+VelocidadeCrescimento = {
 	'corn': 1,
 	'tomato': 0.7
 }

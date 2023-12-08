@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.timers = {
             "usando ferramentas": Timer(350, self.usar_ferramentas),
             "escolhendo ferramentas": Timer(200),
-            "usando sementes": Timer(350, self.usar_ferramentas),
+            "usando sementes": Timer(350, self.usar_sementes),
             "escolhendo sementes": Timer(200)
         }
         # Ferramentas
@@ -59,6 +59,9 @@ class Player(pygame.sprite.Sprite):
         self.dormir = False
         self.camada_solo = camada_solo
 
+    def obtem_alvo(self):
+        self.posicao_alvo = self.rect.center + Offset_ferramentas[self.status.split('_')[0]]
+
     def usar_ferramentas(self):
         if self.selecionando_ferramenta == 'axe':
             for arvore in self.arvore_sprites.sprites():
@@ -70,11 +73,9 @@ class Player(pygame.sprite.Sprite):
 
         if self.selecionando_ferramenta == 'water':
             self.camada_solo.agua(self.posicao_alvo)
-    def obtem_alvo(self):
-        self.posicao_alvo = self.rect.center + Offset_ferramentas[self.status.split('_')[0]]
 
     def usar_sementes(self):
-        pass
+        self.camada_solo.semente_planta(self.posicao_alvo, self.selecionando_sementes)
 
     # importando as sprites
     def import_assets(self):

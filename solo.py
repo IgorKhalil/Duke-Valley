@@ -19,12 +19,14 @@ class AguaTiles(pygame.sprite.Sprite):
 		self.z = Camadas['solo molhado']
 
 class CamadaSolo:
-	def __init__(self, all_sprites):
+	def __init__(self, all_sprites, colisao_sprites):
 
 		# sprite groups
 		self.all_sprites = all_sprites
+		self.colisao_sprites = colisao_sprites
 		self.solo_sprites = pygame.sprite.Group()
 		self.solo_molhado_sprites = pygame.sprite.Group()
+		self.planta_sprites = pygame.sprite.Group()
 
 		# graphics
 		self.solo_surfs = importa_dicionario('./graficos/solo/')
@@ -60,6 +62,8 @@ class CamadaSolo:
 				if 'F' in self.grid[y][x]:
 					self.grid[y][x].append('X')
 					self.solo_tiles()
+					if self.chovendo:
+						self.choveu_molhou()
 
 	def solo_tiles(self):
 		self.solo_sprites.empty()
@@ -110,6 +114,15 @@ class CamadaSolo:
 
 				AguaTiles(solo_sprite.rect.topleft, choice(self.solo_molhado_surf), [self.all_sprites, self.solo_molhado_sprites])
 
+	def choveu_molhou(self):
+		for indice_linha, linha in enumerate(self.grid):
+			for indice_coluna, coluna in enumerate(linha):
+				if 'X' in coluna and 'A' not in coluna:
+					coluna.append('A')
+					x = indice_coluna * tile_size
+					y = indice_linha * tile_size
+					AguaTiles((x,y), choice(self.solo_molhado_surf), [self.all_sprites, self.solo_molhado_sprites])
+
 	def remove_agua(self):
 
 		# Remove sprites de agua
@@ -122,3 +135,62 @@ class CamadaSolo:
 				if 'A' in coluna:
 					coluna.remove('A')
 
+	def verifica_molhado(self, posicao):
+		x = posicao[0] // tile_size
+		y = posicao[1] // tile_size
+		coluna = self.grid[y][x]
+		molhado = 'A' in coluna
+		return molhado
+
+	def semente_planta(self, posicao_alvo, semente):
+		for solo_sprite in self.solo_sprites.sprites():
+			if solo_sprite.rect.collidepoint(posicao_alvo):
+
+				x = solo_sprite.rect.x // tile_size
+				y = solo_sprite.rect.y // tile_size
+
+				if 'P' not in self.grid[y][x]:
+					self.grid[y][x].append('P')
+					Planta(semente, [self.all_sprites, self.planta_sprites, self.colisao_sprites], solo_sprite, self.verifica_molhado)
+
+	def update_plantas(self):
+		for planta in self.planta_sprites.sprites():
+			planta.crescimento_planta()
+
+
+class Planta(pygame.sprite.Sprite):
+	def __init__(self, tipo_planta, grupo, solo, verifica_molhado):
+		super().__init__(grupo)
+
+		# setup
+		self.tipo_planta = tipo_planta
+		self.frames = importa_pasta(f'./graficos/frutas/{tipo_planta}')
+		self.solo = solo
+		self.verifica_molhado = verifica_molhado
+
+		# Crecimento da planta
+		self.crescimento = 0
+		self.crescimento_maximo = len(self.frames) - 1
+		self.velocidade_crescimento = VelocidadeCrescimento[tipo_planta]
+		self.maduro = False
+
+		# sprite setup
+		self.image = self.frames[self.crescimento]
+		self.y_offset = -16 if tipo_planta == 'corn' else -8
+		self.rect = self.image.get_rect(midbottom=solo.rect.midbottom + pygame.math.Vector2(0, self.y_offset))
+		self.z = Camadas['planta']
+
+	def crescimento_planta(self):
+		if self.verifica_molhado(self.rect.center):
+			self.crescimento += self.velocidade_crescimento
+
+			if int(self.crescimento) > 0:
+				self.z = Camadas['main']
+				self.hitbox = self.rect.copy().inflate(-26, -self.rect.height * 0.4)
+
+			if self.crescimento >= self.crescimento_maximo:
+				self.crescimento = self.crescimento_maximo
+				self.maduro = True
+
+			self.image = self.frames[int(self.crescimento)]
+			self.rect = self.image.get_rect(midbottom= self.solo.rect.midbottom + pygame.math.Vector2(0, self.y_offset))

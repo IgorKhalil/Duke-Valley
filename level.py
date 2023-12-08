@@ -2,11 +2,13 @@ import pygame
 from configurações import *
 from player import Player
 from overlay import Overlay
-from sprite import Generico, Agua, Vegetacao, Arvore, Interacao
+from sprite import Generico, Agua, Vegetacao, Arvore, Interacao, Particulas
 from pytmx.util_pygame import load_pygame
 from suporte import *
 from transicao import Transicao
 from solo import CamadaSolo
+from ceu import Chuva
+from random import randint
 
 class Level:
     def __init__(self):
@@ -19,11 +21,16 @@ class Level:
         self.arvore_sprites = pygame.sprite.Group()
         self.interacao_sprites = pygame.sprite.Group()
 
-        self.camada_solo = CamadaSolo(self.all_sprites)
+        self.camada_solo = CamadaSolo(self.all_sprites, self.colisao_sprites)
        # Chamando o setup
         self.setup()
         self.overlay = Overlay(self.player)
         self.transicao = Transicao(self.reset, self.player)
+
+        # Ceu
+        self.chuva = Chuva(self.all_sprites)
+        self.chovendo = randint(0,13) > 9
+        self.camada_solo.chovendo = self.chovendo
 
 
 
@@ -79,27 +86,50 @@ class Level:
         self.player.item_inventario[item] += montante
 
     def reset(self):
+
+        # Plantas
+        self.camada_solo.update_plantas()
+
         # Reseta as maças nas arvores
         for arvore in self.arvore_sprites.sprites():
             for maca in arvore.maca_sprites.sprites():
                 maca.kill()
             arvore.cria_fruta(self.all_sprites)
-            #arvore.reseta_arvore()
+            #arvore.reseta_arvore() a self.image = surf e kill toco do grupo revisar
 
         # remove a agua
         self.camada_solo.remove_agua()
 
+        # Molhando com a chuva
+        self.chovendo = randint(0, 13) > 9
+        self.camada_solo.chovendo = self.chovendo
+        if self.chovendo:
+            self.camada_solo.choveu_molhou()
 
+    def colisao_planta(self):
+        if self.camada_solo.planta_sprites:
+            for planta in self.camada_solo.planta_sprites.sprites():
+                if planta.maduro and planta.rect.colliderect(self.player.hitbox):
+                    self.player_add('milho' if planta.tipo_planta == 'corn' else 'tomate', randint(1,4))
+                    planta.kill()
+                    Particulas(planta.rect.topleft, planta.image, self.all_sprites, z = Camadas['main'])
+                    self.camada_solo.grid[planta.rect.centery // tile_size][planta.rect.centerx // tile_size].remove('P')
 
     def rodando(self,dt):
         self.superfice_tela.fill('black')
         self.all_sprites.desenho_customizado(self.player)
         self.all_sprites.update(dt)
         self.overlay.tela()
-        #print(self.player.item_inventario)
+        self.colisao_planta()
+        print(self.player.item_inventario)
 
+        # Transição Overlay
         if self.player.dormir:
             self.transicao.play()
+
+        # Chuva
+        if self.chovendo:
+            self.chuva.update()
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
