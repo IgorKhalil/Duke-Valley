@@ -6,6 +6,7 @@ from sprite import Generico, Agua, Vegetacao, Arvore, Interacao
 from pytmx.util_pygame import load_pygame
 from suporte import *
 from transicao import Transicao
+from solo import CamadaSolo
 
 class Level:
     def __init__(self):
@@ -18,12 +19,14 @@ class Level:
         self.arvore_sprites = pygame.sprite.Group()
         self.interacao_sprites = pygame.sprite.Group()
 
-        # Chamando o setup
+        self.camada_solo = CamadaSolo(self.all_sprites)
+       # Chamando o setup
         self.setup()
         self.overlay = Overlay(self.player)
-
-        # Trasição
         self.transicao = Transicao(self.reset, self.player)
+
+
+
     def setup(self):
         tmx_data = load_pygame('./data/map.tmx')
 
@@ -42,7 +45,7 @@ class Level:
             Generico((x * tile_size, y * tile_size), surf, [self.all_sprites, self.colisao_sprites])
 
         #agua no mapa
-        frames_agua = import_folder('./graficos/agua')
+        frames_agua = importa_pasta('./graficos/agua')
         for x, y, surf in tmx_data.get_layer_by_name('Water').tiles():
             Agua((x * tile_size, y * tile_size),frames_agua,self.all_sprites)
 
@@ -63,7 +66,8 @@ class Level:
         for objeto in tmx_data.get_layer_by_name('Player'):
             if objeto.name =='Start':
                 self.player = Player((objeto.x, objeto.y), self.all_sprites,
-                                     self.colisao_sprites, self.arvore_sprites, self.interacao_sprites)
+                                     self.colisao_sprites, self.arvore_sprites,
+                                     self.interacao_sprites, self.camada_solo)
 
             if objeto.name == 'Bed':
                 Interacao((objeto.x, objeto.y), (objeto.width, objeto.height), self.interacao_sprites, objeto.name)
@@ -81,12 +85,14 @@ class Level:
                 maca.kill()
             arvore.cria_fruta(self.all_sprites)
 
+
+
     def rodando(self,dt):
         self.superfice_tela.fill('black')
         self.all_sprites.desenho_customizado(self.player)
         self.all_sprites.update(dt)
         self.overlay.tela()
-        print(self.player.item_inventario)
+        #print(self.player.item_inventario)
 
         if self.player.dormir:
             self.transicao.play()

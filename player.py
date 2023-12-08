@@ -7,7 +7,7 @@ from Time import Timer
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, posicao, grupo, colisao_sprites, arvore_sprites, interacao):
+    def __init__(self, posicao, grupo, colisao_sprites, arvore_sprites, interacao, camada_solo):
         super().__init__(grupo)
 
         self.import_assets()
@@ -57,6 +57,7 @@ class Player(pygame.sprite.Sprite):
         self.arvore_sprites = arvore_sprites
         self.interacao = interacao
         self.dormir = False
+        self.camada_solo = camada_solo
 
     def usar_ferramentas(self):
         if self.selecionando_ferramenta == 'axe':
@@ -65,7 +66,8 @@ class Player(pygame.sprite.Sprite):
                     arvore.dano()
 
         if self.selecionando_ferramenta == 'hoe':
-            pass
+            self.camada_solo.arar(self.posicao_alvo)
+
         if self.selecionando_ferramenta == 'water':
             pass
 
@@ -84,7 +86,7 @@ class Player(pygame.sprite.Sprite):
                           'right_water': [], 'left_water': [], 'up_water': [], 'down_water': []}
         for animacao in self.animacoes.keys():
             todos_arquivos = './graficos/personagem/' + animacao
-            self.animacoes[animacao] = import_folder(todos_arquivos)
+            self.animacoes[animacao] = importa_pasta(todos_arquivos)
 
     # animando o personagem
     def animacao(self, dt):
