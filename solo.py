@@ -2,6 +2,7 @@ import pygame
 from configurações import *
 from pytmx.util_pygame import load_pygame
 from suporte import *
+from random import choice
 
 class SoloTiles(pygame.sprite.Sprite):
 	def __init__(self, posicao, surf, grupo):
@@ -10,16 +11,24 @@ class SoloTiles(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect(topleft = posicao)
 		self.z = Camadas['solo']
 
+class AguaTiles(pygame.sprite.Sprite):
+	def __init__(self, posicao, surf, grupo):
+		super().__init__(grupo)
+		self.image = surf
+		self.rect = self.image.get_rect(topleft = posicao)
+		self.z = Camadas['solo molhado']
+
 class CamadaSolo:
 	def __init__(self, all_sprites):
 
 		# sprite groups
 		self.all_sprites = all_sprites
 		self.solo_sprites = pygame.sprite.Group()
+		self.solo_molhado_sprites = pygame.sprite.Group()
 
 		# graphics
-		self.solo_surf = pygame.image.load('./graficos/solo/o.png')
 		self.solo_surfs = importa_dicionario('./graficos/solo/')
+		self.solo_molhado_surf = importa_pasta("./graficos/solo_molhado")
 
 		self.cria_solo()
 		self.cria_rects_araveis()
@@ -43,9 +52,9 @@ class CamadaSolo:
 					rect = pygame.Rect(x, y, tile_size, tile_size)
 					self.hit_rects.append(rect)
 
-	def arar(self, ponto):
+	def arar(self, posicao_alvo):
 		for rect in self.hit_rects:
-			if rect.collidepoint(ponto):
+			if rect.collidepoint(posicao_alvo):
 				x = rect.x // tile_size
 				y = rect.y // tile_size
 				if 'F' in self.grid[y][x]:
@@ -91,3 +100,25 @@ class CamadaSolo:
 
 					SoloTiles((indice_coluna * tile_size, indice_linha * tile_size), self.solo_surfs[tile_padrao],
 							  [self.all_sprites, self.solo_sprites])
+
+	def agua(self, posicao_alvo):
+		for solo_sprite in self.solo_sprites.sprites():
+			if solo_sprite.rect.collidepoint(posicao_alvo):
+				x = solo_sprite.rect.x // tile_size
+				y = solo_sprite.rect.y // tile_size
+				self.grid[y][x].append('A')
+
+				AguaTiles(solo_sprite.rect.topleft, choice(self.solo_molhado_surf), [self.all_sprites, self.solo_molhado_sprites])
+
+	def remove_agua(self):
+
+		# Remove sprites de agua
+		for sprite in self.solo_molhado_sprites.sprites():
+			sprite.kill()
+
+		# Limpa o A do grid
+		for linha in self.grid:
+			for coluna in linha:
+				if 'A' in coluna:
+					coluna.remove('A')
+

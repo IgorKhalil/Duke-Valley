@@ -37,7 +37,7 @@ class Player(pygame.sprite.Sprite):
         }
         # Ferramentas
         self.ferramentas = ['hoe', 'axe', 'water']
-        self.indice_ferramenta = 0
+        self.indice_ferramenta = 1
         self.selecionando_ferramenta = self.ferramentas[self.indice_ferramenta]
 
         # Sementes
@@ -69,8 +69,7 @@ class Player(pygame.sprite.Sprite):
             self.camada_solo.arar(self.posicao_alvo)
 
         if self.selecionando_ferramenta == 'water':
-            pass
-
+            self.camada_solo.agua(self.posicao_alvo)
     def obtem_alvo(self):
         self.posicao_alvo = self.rect.center + Offset_ferramentas[self.status.split('_')[0]]
 

@@ -63,6 +63,7 @@ class Arvore(Generico):
 		super().__init__(posicao, surf, grupo)
 
 		self.nome = name
+		self.surf = surf
 		# atributos
 		self.vida = 5
 		self.viva = True
@@ -77,6 +78,7 @@ class Arvore(Generico):
 		self.cria_fruta(grupo_geral)
 		self.grupo_geral = grupo_geral
 		self.player_add = player_add
+		self.reseta_arvore()
 
 	def dano(self):
 
@@ -114,6 +116,9 @@ class Arvore(Generico):
 					surf=self.maca_surf,
 					grupo=grupo)
 				geral_group.add(maca)
+
+	def reseta_arvore(self):
+		self.image = self.surf
 
 class Interacao(Generico):
 	def __init__(self, posicao, tamanho, grupo, name):

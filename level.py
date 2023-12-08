@@ -84,6 +84,10 @@ class Level:
             for maca in arvore.maca_sprites.sprites():
                 maca.kill()
             arvore.cria_fruta(self.all_sprites)
+            #arvore.reseta_arvore()
+
+        # remove a agua
+        self.camada_solo.remove_agua()
 
 
 
