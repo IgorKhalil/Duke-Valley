@@ -2,9 +2,11 @@ import pygame
 from configurações import *
 from player import Player
 from overlay import Overlay
-from sprite import Generico, Agua, Vegetacao, Arvore
+from sprite import Generico, Agua, Vegetacao, Arvore, Interacao
 from pytmx.util_pygame import load_pygame
 from suporte import *
+from transicao import Transicao
+
 class Level:
     def __init__(self):
         #pega a tela do main
@@ -14,10 +16,14 @@ class Level:
         self.all_sprites = CameraGroup()
         self.colisao_sprites = pygame.sprite.Group()
         self.arvore_sprites = pygame.sprite.Group()
+        self.interacao_sprites = pygame.sprite.Group()
 
         # Chamando o setup
         self.setup()
         self.overlay = Overlay(self.player)
+
+        # Trasição
+        self.transicao = Transicao(self.reset, self.player)
     def setup(self):
         tmx_data = load_pygame('./data/map.tmx')
 
@@ -46,7 +52,8 @@ class Level:
 
         # Arvores
         for objeto in tmx_data.get_layer_by_name('Trees'):
-            Arvore((objeto.x, objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites, self.arvore_sprites], objeto.name, self.all_sprites)
+            Arvore((objeto.x, objeto.y), objeto.image, [self.all_sprites, self.colisao_sprites, self.arvore_sprites],
+                   objeto.name, self.all_sprites, player_add = self.player_add)
 
         # Colisão do mapa
         for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():
@@ -56,16 +63,33 @@ class Level:
         for objeto in tmx_data.get_layer_by_name('Player'):
             if objeto.name =='Start':
                 self.player = Player((objeto.x, objeto.y), self.all_sprites,
-                                     self.colisao_sprites, self.arvore_sprites)
-                Generico(posicao = (0,0),
-                         surf= pygame.image.load("./graficos/mundo/ground.png").convert_alpha(),
-                         grupo = self.all_sprites, z = Camadas['chao'])
+                                     self.colisao_sprites, self.arvore_sprites, self.interacao_sprites)
+
+            if objeto.name == 'Bed':
+                Interacao((objeto.x, objeto.y), (objeto.width, objeto.height), self.interacao_sprites, objeto.name)
+
+        Generico(posicao = (0,0), surf= pygame.image.load("./graficos/mundo/ground.png").convert_alpha(),
+                 grupo = self.all_sprites, z = Camadas['chao'])
+
+    def player_add(self, item, montante):
+        self.player.item_inventario[item] += montante
+
+    def reset(self):
+        # Reseta as maças nas arvores
+        for arvore in self.arvore_sprites.sprites():
+            for maca in arvore.maca_sprites.sprites():
+                maca.kill()
+            arvore.cria_fruta(self.all_sprites)
 
     def rodando(self,dt):
         self.superfice_tela.fill('black')
         self.all_sprites.desenho_customizado(self.player)
         self.all_sprites.update(dt)
         self.overlay.tela()
+        print(self.player.item_inventario)
+
+        if self.player.dormir:
+            self.transicao.play()
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):

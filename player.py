@@ -7,7 +7,7 @@ from Time import Timer
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, posicao, grupo, colisao_sprites, arvore_sprites):
+    def __init__(self, posicao, grupo, colisao_sprites, arvore_sprites, interacao):
         super().__init__(grupo)
 
         self.import_assets()
@@ -45,8 +45,18 @@ class Player(pygame.sprite.Sprite):
         self.indice_sementes = 0
         self.selecionando_sementes = self.sementes[self.indice_sementes]
 
+        # Inventario
+        self.item_inventario = {
+            'madeira': 0,
+            'maçã': 0,
+            'milho': 0,
+            'tomate': 0
+        }
+
         # Interações
         self.arvore_sprites = arvore_sprites
+        self.interacao = interacao
+        self.dormir = False
 
     def usar_ferramentas(self):
         if self.selecionando_ferramenta == 'axe':
@@ -87,7 +97,7 @@ class Player(pygame.sprite.Sprite):
     def input(self):
         keys = pygame.key.get_pressed()
 
-        if not self.timers["usando ferramentas"].ativo:
+        if not self.timers["usando ferramentas"].ativo and not self.dormir:
             # Direções
             if keys[pygame.K_w]:
                 self.direcao.y = -1
@@ -134,6 +144,16 @@ class Player(pygame.sprite.Sprite):
                 if self.indice_sementes == len(self.sementes):
                     self.indice_sementes = 0
                 self.selecionando_sementes = self.sementes[self.indice_sementes]
+
+            # Verificando se está na area de interação
+            if keys[pygame.K_RETURN]:
+                colisao_interacao = pygame.sprite.spritecollide(self, self.interacao, False)
+                if colisao_interacao:
+                    if colisao_interacao[0].name == 'Trader':
+                        pass
+                    else:
+                        self.status = 'right_idle'
+                        self.dormir = True
 
     def get_status(self):
 
