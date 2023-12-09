@@ -50,7 +50,7 @@ class Ceu:
 		self.superfice_tela = pygame.display.get_surface()
 		self.surf = pygame.Surface((largura, altura))
 		self.cor_inicial = [255, 255, 255]
-		self.cor_pordosol = [242,72,15]
+		self.cor_pordosol = [242,72,130]
 		self.cor_final = (46, 68, 130)
 
 	def tela(self, dt):
@@ -62,8 +62,6 @@ class Ceu:
 				for indice2, valor2 in enumerate(self.cor_final):
 					if self.cor_inicial[indice2] > valor2:
 						self.cor_inicial[indice2] -= 2 * dt
-					if self.cor_inicial[indice2] < valor2:
-						self.cor_inicial[indice2] += 2 * dt
 
 		self.surf.fill(self.cor_inicial)
 		self.superfice_tela.blit(self.surf, (0, 0), special_flags = pygame.BLEND_RGBA_MULT)

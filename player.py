@@ -3,7 +3,6 @@ from configurações import *
 from suporte import *
 from Time import Timer
 
-
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
@@ -46,12 +45,15 @@ class Player(pygame.sprite.Sprite):
         self.selecionando_sementes = self.sementes[self.indice_sementes]
 
         # Inventario
+        self.inventory = ['Madeira','Maçã',
+            'Trigo','Tomate']
+
         self.item_inventario = {
             'Madeira': 1,'Maçã': 1,
-            'Milho': 1,'Tomate': 1
+            'Trigo': 9,'Tomate': 1
         }
         self.sementes_inventario = {
-            'Semente de milho': 5, 'Semente de Tomate': 5
+            'Semente de Trigo': 5, 'Semente de Tomate': 5
         }
         self.dinheiro = 200
 
@@ -61,6 +63,10 @@ class Player(pygame.sprite.Sprite):
         self.dormir = False
         self.camada_solo = camada_solo
         self.alterna_loja = alterna_loja
+
+        # Audio
+        self.regando = pygame.mixer.Sound('./audio/water.mp3')
+        self.regando.set_volume(0.1)
 
     def obtem_alvo(self):
         self.posicao_alvo = self.rect.center + Offset_ferramentas[self.status.split('_')[0]]
@@ -76,11 +82,12 @@ class Player(pygame.sprite.Sprite):
 
         if self.selecionando_ferramenta == 'water':
             self.camada_solo.agua(self.posicao_alvo)
+            self.regando.play()
 
     def usar_sementes(self):
-        if self.sementes_inventario[self.selecionando_sementes] > 0:
+        if self.sementes_inventario['Semente de Trigo' if self.selecionando_sementes == 'corn' else 'Semente de Tomate'] > 0:
             self.camada_solo.semente_planta(self.posicao_alvo, self.selecionando_sementes)
-            self.sementes_inventario[self.selecionando_sementes] -= 1
+            self.sementes_inventario['Semente de Trigo' if self.selecionando_sementes == 'corn' else 'Semente de Tomate'] -= 1
 
     # importando as sprites
     def import_assets(self):
@@ -103,7 +110,6 @@ class Player(pygame.sprite.Sprite):
     # Recebendo os comandos da teclas
     def input(self):
         keys = pygame.key.get_pressed()
-
         if not self.timers["usando ferramentas"].ativo and not self.dormir:
             # Direções
             if keys[pygame.K_w]:
@@ -215,6 +221,7 @@ class Player(pygame.sprite.Sprite):
         self.hitbox.centery = round(self.posicao.y)
         self.rect.centery = self.hitbox.centery
         self.colisao('vertical')
+
 
     def update(self, dt):
         self.input()

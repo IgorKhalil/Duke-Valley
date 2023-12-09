@@ -6,7 +6,8 @@ tile_size = 64
 
 Overlay_Posicao = {
 	'ferramenta' : (40, altura - 15),
-	'semente': (70, altura - 5)}
+	'semente': (70, altura - 5),
+	'madeira': (50, 50)}
 
 Offset_ferramentas = {
 	'left': Vector2(-50,40),
@@ -42,10 +43,10 @@ VelocidadeCrescimento = {
 Preco_de_venda = {
 	'Madeira': 4,
 	'Maçã': 2,
-	'Milho': 10,
+	'Trigo': 10,
 	'Tomate': 20
 }
 Preco_de_compra = {
-	'Semente de milho': 4,
+	'Semente de Trigo': 4,
 	'Semente de Tomate': 5
 }

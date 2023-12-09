@@ -35,6 +35,12 @@ class CamadaSolo:
 		self.cria_solo()
 		self.cria_rects_araveis()
 
+		# Audio
+		self.hoe_audio = pygame.mixer.Sound('./audio/hoe.wav')
+		self.hoe_audio.set_volume(0.1)
+		self.planta_audio = pygame.mixer.Sound("./audio/plant.wav")
+		self.planta_audio.set_volume(0.08)
+
 	def cria_solo(self):
 		chao = pygame.image.load('./graficos/mundo/ground.png')
 		horizontal_tiles = chao.get_width() // tile_size
@@ -55,6 +61,7 @@ class CamadaSolo:
 					self.hit_rects.append(rect)
 
 	def arar(self, posicao_alvo):
+		self.hoe_audio.play()
 		for rect in self.hit_rects:
 			if rect.collidepoint(posicao_alvo):
 				x = rect.x // tile_size
@@ -145,6 +152,7 @@ class CamadaSolo:
 	def semente_planta(self, posicao_alvo, semente):
 		for solo_sprite in self.solo_sprites.sprites():
 			if solo_sprite.rect.collidepoint(posicao_alvo):
+				self.planta_audio.play()
 
 				x = solo_sprite.rect.x // tile_size
 				y = solo_sprite.rect.y // tile_size

@@ -31,12 +31,20 @@ class Level:
         # Ceu
         self.ceu = Ceu()
         self.chuva = Chuva(self.all_sprites)
-        self.chovendo = randint(0,13) > 9
+        self.chovendo = randint(0,12) > 8
         self.camada_solo.chovendo = self.chovendo
 
         # Loja
         self.menu = Menu(self.player, self.alterna_loja)
         self.loja_ativa = False
+
+        # Audio
+        self.sucesso = pygame.mixer.Sound('./audio/success.wav')
+        self.sucesso.set_volume(0.03)
+
+        self.musica = pygame.mixer.Sound('./audio/music.mp3')
+        self.musica.set_volume(0.02)
+        self.musica.play(-1)
 
     def setup(self):
         tmx_data = load_pygame('./data/map.tmx')
@@ -93,6 +101,7 @@ class Level:
 
     def player_add(self, item, montante):
         self.player.item_inventario[item] += montante
+        self.sucesso.play()
 
     def alterna_loja(self):
         self.loja_ativa = not self.loja_ativa
@@ -114,7 +123,7 @@ class Level:
         self.camada_solo.remove_agua()
 
         # Molhando com a chuva
-        self.chovendo = randint(0, 13) > 9
+        self.chovendo = randint(0, 12) > 8
         self.camada_solo.chovendo = self.chovendo
         if self.chovendo:
             self.camada_solo.choveu_molhou()
@@ -123,7 +132,7 @@ class Level:
         if self.camada_solo.planta_sprites:
             for planta in self.camada_solo.planta_sprites.sprites():
                 if planta.maduro and planta.rect.colliderect(self.player.hitbox):
-                    self.player_add('Milho' if planta.tipo_planta == 'corn' else 'Tomate', randint(1,4))
+                    self.player_add('Trigo' if planta.tipo_planta == 'corn' else 'Tomate', randint(1,4))
                     planta.kill()
                     Particulas(planta.rect.topleft, planta.image, self.all_sprites, z = Camadas['main'])
                     self.camada_solo.grid[planta.rect.centery // tile_size][planta.rect.centerx // tile_size].remove('P')
@@ -141,14 +150,17 @@ class Level:
             self.all_sprites.update(dt)
             self.colisao_planta()
 
-        # Transição Overlay
-        self.overlay.tela()
         if self.player.dormir:
             self.transicao.play()
         # mudança de Céu (Noite e Chuva)
         self.ceu.tela(dt)
         if self.chovendo and not self.loja_ativa:
             self.chuva.update()
+
+        # Transição Overlay
+        self.overlay.tela()
+        if not self.loja_ativa:
+            self.overlay.overlay_inventario()
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):

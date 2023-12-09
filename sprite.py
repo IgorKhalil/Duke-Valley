@@ -80,7 +80,13 @@ class Arvore(Generico):
 		self.player_add = player_add
 		self.reseta_arvore()
 
+		# Sons
+		self.axe_audio = pygame.mixer.Sound('./audio/axe.mp3')
+		self.axe_audio.set_volume(0.3)
+
 	def dano(self):
+
+		self.axe_audio.play()
 
 		if self.viva:
 			self.vida -= 1
