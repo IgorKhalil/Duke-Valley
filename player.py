@@ -7,7 +7,7 @@ from Time import Timer
 # criado uma classe para o personagem
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, posicao, grupo, colisao_sprites, arvore_sprites, interacao, camada_solo):
+    def __init__(self, posicao, grupo, colisao_sprites, arvore_sprites, interacao, camada_solo, alterna_loja):
         super().__init__(grupo)
 
         self.import_assets()
@@ -47,17 +47,20 @@ class Player(pygame.sprite.Sprite):
 
         # Inventario
         self.item_inventario = {
-            'madeira': 0,
-            'maçã': 0,
-            'milho': 0,
-            'tomate': 0
+            'Madeira': 1,'Maçã': 1,
+            'Milho': 1,'Tomate': 1
         }
+        self.sementes_inventario = {
+            'Semente de milho': 5, 'Semente de Tomate': 5
+        }
+        self.dinheiro = 200
 
         # Interações
         self.arvore_sprites = arvore_sprites
         self.interacao = interacao
         self.dormir = False
         self.camada_solo = camada_solo
+        self.alterna_loja = alterna_loja
 
     def obtem_alvo(self):
         self.posicao_alvo = self.rect.center + Offset_ferramentas[self.status.split('_')[0]]
@@ -75,7 +78,9 @@ class Player(pygame.sprite.Sprite):
             self.camada_solo.agua(self.posicao_alvo)
 
     def usar_sementes(self):
-        self.camada_solo.semente_planta(self.posicao_alvo, self.selecionando_sementes)
+        if self.sementes_inventario[self.selecionando_sementes] > 0:
+            self.camada_solo.semente_planta(self.posicao_alvo, self.selecionando_sementes)
+            self.sementes_inventario[self.selecionando_sementes] -= 1
 
     # importando as sprites
     def import_assets(self):
@@ -152,7 +157,8 @@ class Player(pygame.sprite.Sprite):
                 colisao_interacao = pygame.sprite.spritecollide(self, self.interacao, False)
                 if colisao_interacao:
                     if colisao_interacao[0].name == 'Trader':
-                        pass
+                        self.alterna_loja()
+
                     else:
                         self.status = 'right_idle'
                         self.dormir = True

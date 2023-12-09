@@ -7,8 +7,9 @@ from pytmx.util_pygame import load_pygame
 from suporte import *
 from transicao import Transicao
 from solo import CamadaSolo
-from ceu import Chuva
+from ceu import Chuva, Ceu
 from random import randint
+from menu import Menu
 
 class Level:
     def __init__(self):
@@ -28,11 +29,14 @@ class Level:
         self.transicao = Transicao(self.reset, self.player)
 
         # Ceu
+        self.ceu = Ceu()
         self.chuva = Chuva(self.all_sprites)
         self.chovendo = randint(0,13) > 9
         self.camada_solo.chovendo = self.chovendo
 
-
+        # Loja
+        self.menu = Menu(self.player, self.alterna_loja)
+        self.loja_ativa = False
 
     def setup(self):
         tmx_data = load_pygame('./data/map.tmx')
@@ -74,10 +78,15 @@ class Level:
             if objeto.name =='Start':
                 self.player = Player((objeto.x, objeto.y), self.all_sprites,
                                      self.colisao_sprites, self.arvore_sprites,
-                                     self.interacao_sprites, self.camada_solo)
+                                     self.interacao_sprites, self.camada_solo,
+                                     self.alterna_loja)
 
             if objeto.name == 'Bed':
                 Interacao((objeto.x, objeto.y), (objeto.width, objeto.height), self.interacao_sprites, objeto.name)
+
+            if objeto.name == 'Trader':
+                Interacao((objeto.x, objeto.y), (objeto.width, objeto.height), self.interacao_sprites, objeto.name)
+
 
         Generico(posicao = (0,0), surf= pygame.image.load("./graficos/mundo/ground.png").convert_alpha(),
                  grupo = self.all_sprites, z = Camadas['chao'])
@@ -85,10 +94,14 @@ class Level:
     def player_add(self, item, montante):
         self.player.item_inventario[item] += montante
 
+    def alterna_loja(self):
+        self.loja_ativa = not self.loja_ativa
+
     def reset(self):
 
         # Plantas
         self.camada_solo.update_plantas()
+        self.ceu.cor_inicial = [255,255,255]
 
         # Reseta as maças nas arvores
         for arvore in self.arvore_sprites.sprites():
@@ -110,25 +123,31 @@ class Level:
         if self.camada_solo.planta_sprites:
             for planta in self.camada_solo.planta_sprites.sprites():
                 if planta.maduro and planta.rect.colliderect(self.player.hitbox):
-                    self.player_add('milho' if planta.tipo_planta == 'corn' else 'tomate', randint(1,4))
+                    self.player_add('Milho' if planta.tipo_planta == 'corn' else 'Tomate', randint(1,4))
                     planta.kill()
                     Particulas(planta.rect.topleft, planta.image, self.all_sprites, z = Camadas['main'])
                     self.camada_solo.grid[planta.rect.centery // tile_size][planta.rect.centerx // tile_size].remove('P')
 
     def rodando(self,dt):
+
+        # Desenhando na tela
         self.superfice_tela.fill('black')
         self.all_sprites.desenho_customizado(self.player)
-        self.all_sprites.update(dt)
-        self.overlay.tela()
-        self.colisao_planta()
-        print(self.player.item_inventario)
+
+        # Updates
+        if self.loja_ativa:
+            self.menu.update()
+        else:
+            self.all_sprites.update(dt)
+            self.colisao_planta()
 
         # Transição Overlay
+        self.overlay.tela()
         if self.player.dormir:
             self.transicao.play()
-
-        # Chuva
-        if self.chovendo:
+        # mudança de Céu (Noite e Chuva)
+        self.ceu.tela(dt)
+        if self.chovendo and not self.loja_ativa:
             self.chuva.update()
 
 class CameraGroup(pygame.sprite.Group):

@@ -88,7 +88,7 @@ class Arvore(Generico):
 			if len(self.maca_sprites.sprites()) > 0:
 				maca_aleatoria = choice(self.maca_sprites.sprites())
 				Particulas(maca_aleatoria.rect.topleft, maca_aleatoria.image, self.grupo_geral, z=Camadas['fruta'])
-				self.player_add('maçã', 1)
+				self.player_add('Maçã', 1)
 				maca_aleatoria.kill()
 
 	def verifica_morte(self):
@@ -99,7 +99,7 @@ class Arvore(Generico):
 			self.rect = self.image.get_rect(midbottom=self.rect.midbottom)
 			self.hitbox = self.rect.copy().inflate(-10, -self.rect.height * 0.6)
 			self.viva = False
-			self.player_add('madeira', randint(3,5) if name == 'Small' else randint(4,7))
+			self.player_add('Madeira', randint(3,5) if name == 'Small' else randint(4,7))
 
 	def update(self, dt):
 		if self.viva:
