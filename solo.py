@@ -150,6 +150,7 @@ class CamadaSolo:
 		return molhado
 
 	def semente_planta(self, posicao_alvo, semente):
+
 		for solo_sprite in self.solo_sprites.sprites():
 			if solo_sprite.rect.collidepoint(posicao_alvo):
 				self.planta_audio.play()
@@ -160,6 +161,7 @@ class CamadaSolo:
 				if 'P' not in self.grid[y][x]:
 					self.grid[y][x].append('P')
 					Planta(semente, [self.all_sprites, self.planta_sprites, self.colisao_sprites], solo_sprite, self.verifica_molhado)
+
 
 	def update_plantas(self):
 		for planta in self.planta_sprites.sprites():

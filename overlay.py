@@ -23,6 +23,7 @@ class Overlay:
 		# pegando os valores do inventario
 		self.quantidade_item = list(self.player.item_inventario.values())
 		self.quantidade_sementes = list(self.player.sementes_inventario.values())
+		self.quantidade_dinheiro = self.player.dinheiro
 		self.fonte = pygame.font.Font('./fonte/LycheeSoda.ttf', 30)
 
 
@@ -40,6 +41,7 @@ class Overlay:
 	def overlay_inventario(self):
 		self.quantidade_item = list(self.player.item_inventario.values())
 		self.quantidade_sementes = list(self.player.sementes_inventario.values())
+		self.quantidade_dinheiro = self.player.dinheiro
 
 
 		pygame.Surface((largura,altura))
@@ -62,23 +64,28 @@ class Overlay:
 		self.superfice_tela.blit(pygame.transform.scale(self.overlay_maca, (50, 40)), (back2_rect.x, back2_rect.y + 5))
 		self.superfice_tela.blit(pygame.transform.scale(self.overlay_trigo, (50, 50)), back3_rect)
 		self.superfice_tela.blit(pygame.transform.scale(self.overlay_tomate, (50, 50)), back4_rect)
+		self.superfice_tela.blit(pygame.transform.scale(self.overlay_dinheiro,(50,50)), (retangulo_inventario.left, retangulo_inventario.bottom))
 
-		surf_texto_madeira = self.fonte.render(str(self.quantidade_item[0]), False, 'Black')
+		surf_texto_madeira = self.fonte.render(str(self.quantidade_item[0]), True, 'white')
 		rect_texto_madeira = surf_texto_madeira.get_rect(topleft = (back1_rect.x + 2, back1_rect.y - 6))
 		self.superfice_tela.blit(surf_texto_madeira,rect_texto_madeira)
 
-		surf_texto_maca = self.fonte.render(str(self.quantidade_item[1]), False, "black")
+		surf_texto_maca = self.fonte.render(str(self.quantidade_item[1]), False, "white")
 		rect_texto_maca = surf_texto_maca.get_rect(topleft = (back2_rect.x + 2, back2_rect.y - 6))
 		self.superfice_tela.blit(surf_texto_maca,rect_texto_maca)
 
-		surf_texto_milho = self.fonte.render(str(self.quantidade_item[2]), False, "black")
+		surf_texto_milho = self.fonte.render(str(self.quantidade_item[2]), False, "white")
 		rect_texto_milho = surf_texto_milho.get_rect(topleft=(back3_rect.x + 2, back3_rect.y - 6))
 		self.superfice_tela.blit(surf_texto_milho, rect_texto_milho)
 
-		surf_texto_tomate = self.fonte.render(str(self.quantidade_item[3]), False, "black")
+		surf_texto_tomate = self.fonte.render(str(self.quantidade_item[3]), False, "white")
 		rect_texto_tomate = surf_texto_tomate.get_rect(topleft=(back4_rect.x + 2, back4_rect.y - 6))
 		self.superfice_tela.blit(surf_texto_tomate, rect_texto_tomate)
 
 		surf_semente = self.fonte.render(str(self.quantidade_sementes[0 if self.player.selecionando_sementes == 'corn' else 1]), False, "white")
 		rect_semente = surf_semente.get_rect(bottomleft=(self.semente_rect.right + 3, self.semente_rect.centery))
 		self.superfice_tela.blit(surf_semente,rect_semente)
+
+		surf_dinheiro = self.fonte.render(f'R${self.quantidade_dinheiro}', False, 'white')
+		rect_dinheiro = surf_dinheiro.get_rect(topleft = (retangulo_inventario.x + 55, retangulo_inventario.bottom + 7))
+		self.superfice_tela.blit(surf_dinheiro,rect_dinheiro)

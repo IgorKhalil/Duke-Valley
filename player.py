@@ -29,9 +29,9 @@ class Player(pygame.sprite.Sprite):
 
         # Timers
         self.timers = {
-            "usando ferramentas": Timer(350, self.usar_ferramentas),
+            "usando ferramentas": Timer(500, self.usar_ferramentas),
             "escolhendo ferramentas": Timer(200),
-            "usando sementes": Timer(350, self.usar_sementes),
+            "usando sementes": Timer(500, self.usar_sementes),
             "escolhendo sementes": Timer(200)
         }
         # Ferramentas
@@ -146,9 +146,14 @@ class Player(pygame.sprite.Sprite):
 
             # Usando Semenetes
             if keys[pygame.K_LCTRL]:
-                self.timers["usando sementes"].ativado()
-                self.direcao = pygame.math.Vector2()
-                self.indice_frame = 0
+                for solo_sprite in self.camada_solo.solo_sprites.sprites():
+                    if solo_sprite.rect.collidepoint(self.posicao_alvo):
+                        x = solo_sprite.rect.x // tile_size
+                        y = solo_sprite.rect.y // tile_size
+                        if 'P' not in self.camada_solo.grid[y][x]:
+                            self.timers["usando sementes"].ativado()
+                            self.direcao = pygame.math.Vector2()
+                            self.indice_frame = 0
 
             # Mudando a sementes
             if keys[pygame.K_e] and not self.timers["escolhendo sementes"].ativo:

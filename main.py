@@ -4,6 +4,12 @@ from configurações import *
 from level import Level
 pygame.joystick.init()
 
+'''Olá professor: esse jogo foi inspirado em um jogo que gosto muito, chamdado Stardew Valley.
+    Foi utilizado como base um video do canal Clear Code https://youtu.be/T4IX36sP_0c?si=fvsijHKY5gOmgzVa 
+    Foi utilizado outro video para a construção da indepêndencia de frames https://www.youtube.com/watch?v=rWtfClpWSb8&t=
+    Por fim utilizei como ajuda o livro Introdução ao Desenvolvimento de Jogos em Python com PyGame de Harrison Kinsley e Will McGugan'''
+     
+
 class Jogo:
     def __init__(self):
         pygame.init()

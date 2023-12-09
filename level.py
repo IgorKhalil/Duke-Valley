@@ -137,6 +137,12 @@ class Level:
                     Particulas(planta.rect.topleft, planta.image, self.all_sprites, z = Camadas['main'])
                     self.camada_solo.grid[planta.rect.centery // tile_size][planta.rect.centerx // tile_size].remove('P')
 
+    def verifica_semente(self):
+
+        if self.camada_solo.semente_planta == 'True':
+            self.player.sementes_inventario['Semente de Trigo' if self.player.selecionando_sementes == 'corn' else 'Semente de Tomate'] -= 1
+
+
     def rodando(self,dt):
 
         # Desenhando na tela
